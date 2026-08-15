@@ -11,6 +11,8 @@ menu_frame = tk.Frame(window, bg="blue")
 play_frame = tk.Frame(window, bg="red")
 show_score_frame = tk.Frame(window, bg="green")
 reset_score_frame = tk.Frame(window, bg="yellow")
+rps_frame = tk.Frame(window, bg="purple")
+guess_number_frame = tk.Frame(window, bg="black")
 
 #Main menu
 menu_frame.pack(fill="both", expand=True)
@@ -24,6 +26,8 @@ def show_frame(frame_to_show):
     play_frame.pack_forget()
     show_score_frame.pack_forget()
     reset_score_frame.pack_forget()
+    rps_frame.pack_forget()
+    guess_number_frame.pack_forget()
     
     frame_to_show.pack(fill="both", expand=True)
 
@@ -42,6 +46,14 @@ def exit_button_press():
 
 exit_button = tk.Button(menu_frame, text="Exit", command=exit_button_press, width=15, height=2)
 exit_button.pack(pady=10)
+
+
+#Play frame
+play_rps_button = tk.Button(play_frame, text="Rock Paper Scissor", command=lambda: show_frame(rps_frame), width=15, height=2)
+play_rps_button.pack(pady=10)
+
+play_guess_number_button = tk.Button(play_frame, text="Guess Number", command=lambda: show_frame(guess_number_frame), width=15, height=2)
+play_guess_number_button.pack(pady=10)
 
 #Back Buttons
 back_from_play_button = tk.Button(play_frame, text="Back", command=lambda: show_frame(menu_frame), width=15, height=2)
