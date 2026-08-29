@@ -67,7 +67,7 @@ play_sidebar.pack_propagate(False)
 play_rps_button = tk.Button(play_sidebar, text="Rock Paper Scissor", command=lambda: show_frame(rps_frame), width=15, height=2)
 play_rps_button.pack(pady=10)
 
-play_guess_number_button = tk.Button(play_sidebar, text="Guess Number", command=lambda: show_frame(guess_number_frame), width=15, height=2)
+play_guess_number_button = tk.Button(play_sidebar, text="Guess Number", command=lambda: [show_frame(guess_number_frame), start_guess_game()], width=15, height=2)
 play_guess_number_button.pack(pady=10)
 #============================================================================================================================================
 
@@ -94,12 +94,7 @@ def start_guess_game():
     
     result_label.config(text="Guess a number")
     guess_entry.delete(0, "end")
-    
-    if user_guess == guessed_number:
-        result_label.config(text=f"congratulations, you found it in {attempts} attempts")
-    elif user_guess > guessed_number:
-        result_label.config(text="Try a bit lower")
-    else: result_label.config(text="Try a bit higer")
+    guess_button.config(state="normal")
     
 #guess check function
 def check_guess():
@@ -115,6 +110,7 @@ def check_guess():
         
     if user_guess == target_number:
         result_label.config(text=f"congratulations, you found it in {attempts} attempts")
+        guess_button.config(state="disabled")
     elif user_guess > target_number:
         result_label.config(text="Try a bit lower")
     else:
@@ -133,7 +129,7 @@ guess_button.pack(pady=10)
 new_game_button = tk.Button(guess_number_frame, text="New Game", command=start_guess_game, width=10, height=2)
 new_game_button.pack(pady=10)
 
-back_button = tk.Button(guess_number_frame, text="Back", command=lambda: show_frame(menu_frame), width=10, height=2)
+back_button = tk.Button(guess_number_frame, text="Back", command=lambda: show_frame(play_frame), width=10, height=2)
 back_button.pack(pady=10)
 #============================================================================================================================================
 window.mainloop()
