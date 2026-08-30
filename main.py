@@ -133,9 +133,9 @@ def choose_scissor():
     rps_score_label.config(text=f"you: {user_score} - PC: {pc_score}")
 
 #creating images
-rock_image = tk.PhotoImage(file="images/rock.png")
-paper_image = tk.PhotoImage(file="images/paper.png")
-scissor_image = tk.PhotoImage(file="images/scissor.png")
+rock_image = tk.PhotoImage(file="images/rock.png").subsample(5, 5)
+paper_image = tk.PhotoImage(file="images/paper.png").subsample(8,8)
+scissor_image = tk.PhotoImage(file="images/scissor.png").subsample(15, 21)
 
 #rock paper scissor game insides
 rps_score_label = tk.Label(rps_frame, text=f"you: {user_score} - PC: {pc_score}", font=("Arial", 14), bg="black", fg="white")
@@ -144,14 +144,17 @@ rps_score_label.pack(pady=10)
 rps_result_label = tk.Label(rps_frame, text="", font=("Arial", 14), bg="black", fg="white")
 rps_result_label.pack(pady=10)
 
-rock_button = tk.Button(rps_frame, image=rock_image, command=choose_rock, width=100, height=100)
-rock_button.pack(pady=10)
+rps_choice_buttons_container = tk.Label(rps_frame, bg="purple")
+rps_choice_buttons_container.pack()
 
-paper_button = tk.Button(rps_frame, image=paper_image, command=choose_paper, width=100, height=100)
-paper_button.pack(pady=10)
+rock_button = tk.Button(rps_choice_buttons_container, image=rock_image, command=choose_rock)
+rock_button.pack(side="left", padx=10)
 
-scissor_button = tk.Button(rps_frame, image=scissor_image, command=choose_scissor, width=100, height=100)
-scissor_button.pack(pady=10)
+paper_button = tk.Button(rps_choice_buttons_container, image=paper_image, command=choose_paper)
+paper_button.pack(side="left", padx=10)
+
+scissor_button = tk.Button(rps_choice_buttons_container, image=scissor_image, command=choose_scissor)
+scissor_button.pack(side="left", padx=10)
 
 rps_game_back_button = tk.Button(rps_frame, text="Back", command=lambda: show_frame(play_frame), width=10, height=2)
 rps_game_back_button.pack(pady=10)
