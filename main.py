@@ -88,6 +88,7 @@ rps_user_score = 0
 rps_pc_score = 0
 
 guess_attempts = 0
+best_guess_attempt = 999
 guess_target_number = 0
 #============================================================================================================================================
 
@@ -113,6 +114,24 @@ def load_rps_score():
         rps_user_score = 0
         rps_pc_score = 0
 
+#guess save load
+def save_best_guess_score():
+    global best_guess_attempt , guess_attempts
+    if guess_attempts < best_guess_attempt:   
+        with open("guess_best_score.txt", "w") as f:
+            f.write(f"{guess_attempts}")
+
+def load_best_guess_score():
+    global best_guess_attempt
+    if os.path.exists("guess_best_score.txt"):
+        try:
+            with open("guess_best_score.txt", "r") as f:
+                best_guess_attempt = int(f.read().strip())
+        except:
+            best_guess_attempt = 999
+    else:
+        best_guess_attempt = 999
+        
 #============================================================================================================================================
 
 #rock paper scissor game=====================================================================================================================
@@ -133,6 +152,7 @@ def choose_rock():
         rps_user_score +=1
     
     rps_score_label.config(text=f"you: {rps_user_score} - PC: {rps_pc_score}")
+    rps_show_score_label.config(text=f"You: {rps_user_score} - PC:{rps_pc_score}")
     save_rps_score()
     
 def choose_paper():
@@ -149,6 +169,7 @@ def choose_paper():
         rps_user_score +=1
     
     rps_score_label.config(text=f"you: {rps_user_score} - PC: {rps_pc_score}")
+    rps_show_score_label.config(text=f"You: {rps_user_score} - PC:{rps_pc_score}")
     save_rps_score()
     
 def choose_scissor():
@@ -165,6 +186,7 @@ def choose_scissor():
         rps_user_score +=1
     
     rps_score_label.config(text=f"you: {rps_user_score} - PC: {rps_pc_score}")
+    rps_show_score_label.config(text=f"You: {rps_user_score} - PC:{rps_pc_score}")
     save_rps_score()
 
 #creating images
@@ -196,13 +218,15 @@ rps_game_back_button.pack(pady=10)
 #============================================================================================================================================
 
 #guess the number game=======================================================================================================================
+load_best_guess_score()
+
 #start function
 def start_guess_game():
     global guess_attempts, guess_target_number
     guess_target_number = random.randint(1, 100)
     guess_attempts = 0
     
-    guess_result_label.config(text="Guess a number")
+    guess_result_label.config(text="Guess a number(10 attempts available)")
     guess_entry.delete(0, "end")
     guess_button.config(state="normal")
     
@@ -217,10 +241,18 @@ def check_guess():
     
     guess_attempts += 1
     guess_entry.delete(0, "end")
+    
+    if guess_attempts == 10:
+        guess_result_label.config(text=f"you've reached 10 attempts and didn't find it you lost, the number was {guess_target_number}")
+        guess_button.config(state="disabled")
+        return
         
     if user_guess == guess_target_number:
-        guess_result_label.config(text=f"congratulations, you found it in {guess_attempts} guess_attempts")
+        guess_result_label.config(text=f"congratulations, you found it in {guess_attempts} attempts")
         guess_button.config(state="disabled")
+        save_best_guess_score()
+        load_best_guess_score()
+        guess_show_score_label.config(text=f"best score: {best_guess_attempt}")
     elif user_guess > guess_target_number:
         guess_result_label.config(text="Try a bit lower")
     else:
@@ -241,5 +273,12 @@ new_game_button.pack(pady=10)
 
 guess_game_back_button = tk.Button(guess_number_frame, text="Back", command=lambda: show_frame(play_frame), width=10, height=2)
 guess_game_back_button.pack(pady=10)
+#============================================================================================================================================
+
+#show score menu=============================================================================================================================
+rps_show_score_label = tk.Label(show_score_frame, text=f"You: {rps_user_score} - PC:{rps_pc_score}", font=("Arial", 14), bg="black", fg="white")
+rps_show_score_label.pack(pady=10)
+guess_show_score_label = tk.Label(show_score_frame, text=f"best score: {best_guess_attempt}", font=("Arial", 14), bg="black", fg="white")
+guess_show_score_label.pack(pady=10)
 #============================================================================================================================================
 window.mainloop()
