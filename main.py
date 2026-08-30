@@ -1,5 +1,6 @@
 import tkinter as tk
 import random
+import os
 
 #Window creation=============================================================================================================================
 window = tk.Tk()
@@ -82,55 +83,89 @@ back_from_reset_score_button = tk.Button(reset_score_frame, text="Back", command
 back_from_reset_score_button.pack(pady=10)
 #============================================================================================================================================
 
+#global variables============================================================================================================================
+rps_user_score = 0
+rps_pc_score = 0
+
+guess_attempts = 0
+guess_target_number = 0
+#============================================================================================================================================
+
+#SAVE/LOAD Functions=========================================================================================================================
+#rps save/load
+def save_rps_score():
+    with open("rps_score.txt" , "w") as f:
+        f.write(f"{rps_user_score},{rps_pc_score}")
+        
+def load_rps_score():
+    global rps_user_score, rps_pc_score
+    if os.path.exists("rps_score.txt"):
+        try:
+            with open("rps_score.txt" , "r") as f:
+                data = f.read().strip()
+                parts = data.split(",")
+                rps_user_score = int(parts[0])
+                rps_pc_score = int(parts[1])
+        except:
+            rps_user_score = 0
+            rps_pc_score = 0
+    else:
+        rps_user_score = 0
+        rps_pc_score = 0
+
+#============================================================================================================================================
+
 #rock paper scissor game=====================================================================================================================
-user_score = 0
-pc_score = 0
+load_rps_score()
 
 #choices functions
 def choose_rock():
-    global user_score, pc_score
+    global rps_user_score, rps_pc_score
     pc_choice = random.choice(["rock", "paper", "scissor"])
     
     if pc_choice == "rock":
         rps_result_label.config(text="pc choosed rock, it's a tie")
     elif pc_choice == "paper":
         rps_result_label.config(text="pc choosed paper, you lost try again")
-        pc_score +=1
+        rps_pc_score +=1
     else:
         rps_result_label.config(text="pc choosed scissor, congratulations you won")
-        user_score +=1
+        rps_user_score +=1
     
-    rps_score_label.config(text=f"you: {user_score} - PC: {pc_score}")
+    rps_score_label.config(text=f"you: {rps_user_score} - PC: {rps_pc_score}")
+    save_rps_score()
     
 def choose_paper():
-    global user_score, pc_score
+    global rps_user_score, rps_pc_score
     pc_choice = random.choice(["rock", "paper", "scissor"])
     
     if pc_choice == "paper":
         rps_result_label.config(text="pc choosed paper, it's a tie")
     elif pc_choice == "scissor":
         rps_result_label.config(text="pc choosed scissor, you lost try again")
-        pc_score +=1
+        rps_pc_score +=1
     else:
         rps_result_label.config(text="pc choosed rock, congratulations you won")
-        user_score +=1
+        rps_user_score +=1
     
-    rps_score_label.config(text=f"you: {user_score} - PC: {pc_score}")
+    rps_score_label.config(text=f"you: {rps_user_score} - PC: {rps_pc_score}")
+    save_rps_score()
     
 def choose_scissor():
-    global user_score, pc_score
+    global rps_user_score, rps_pc_score
     pc_choice = random.choice(["rock", "paper", "scissor"])
     
     if pc_choice == "scissor":
         rps_result_label.config(text="pc choosed scissor, it's a tie")
     elif pc_choice == "rock":
         rps_result_label.config(text="pc choosed rock, you lost try again")
-        pc_score +=1
+        rps_pc_score +=1
     else:
         rps_result_label.config(text="pc choosed paper, congratulations you won")
-        user_score +=1
+        rps_user_score +=1
     
-    rps_score_label.config(text=f"you: {user_score} - PC: {pc_score}")
+    rps_score_label.config(text=f"you: {rps_user_score} - PC: {rps_pc_score}")
+    save_rps_score()
 
 #creating images
 rock_image = tk.PhotoImage(file="images/rock.png").subsample(5, 5)
@@ -138,7 +173,7 @@ paper_image = tk.PhotoImage(file="images/paper.png").subsample(8,8)
 scissor_image = tk.PhotoImage(file="images/scissor.png").subsample(15, 21)
 
 #rock paper scissor game insides
-rps_score_label = tk.Label(rps_frame, text=f"you: {user_score} - PC: {pc_score}", font=("Arial", 14), bg="black", fg="white")
+rps_score_label = tk.Label(rps_frame, text=f"you: {rps_user_score} - PC: {rps_pc_score}", font=("Arial", 14), bg="black", fg="white")
 rps_score_label.pack(pady=10)
 
 rps_result_label = tk.Label(rps_frame, text="", font=("Arial", 14), bg="black", fg="white")
@@ -161,14 +196,11 @@ rps_game_back_button.pack(pady=10)
 #============================================================================================================================================
 
 #guess the number game=======================================================================================================================
-attempts = 0
-target_number = 0
-
 #start function
 def start_guess_game():
-    global attempts, target_number
-    target_number = random.randint(1, 100)
-    attempts = 0
+    global guess_attempts, guess_target_number
+    guess_target_number = random.randint(1, 100)
+    guess_attempts = 0
     
     guess_result_label.config(text="Guess a number")
     guess_entry.delete(0, "end")
@@ -176,20 +208,20 @@ def start_guess_game():
     
 #guess check function
 def check_guess():
-    global attempts
+    global guess_attempts
     try:
         user_guess = int(guess_entry.get())
     except ValueError:
         guess_result_label.config(text="That's not a number!")
         return
     
-    attempts += 1
+    guess_attempts += 1
     guess_entry.delete(0, "end")
         
-    if user_guess == target_number:
-        guess_result_label.config(text=f"congratulations, you found it in {attempts} attempts")
+    if user_guess == guess_target_number:
+        guess_result_label.config(text=f"congratulations, you found it in {guess_attempts} guess_attempts")
         guess_button.config(state="disabled")
-    elif user_guess > target_number:
+    elif user_guess > guess_target_number:
         guess_result_label.config(text="Try a bit lower")
     else:
         guess_result_label.config(text="Try a bit higher")
