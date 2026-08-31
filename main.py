@@ -242,7 +242,7 @@ def check_guess():
     guess_attempts += 1
     guess_entry.delete(0, "end")
     
-    if guess_attempts == 10 and user_guess != guess_target_number:
+    if guess_attempts >= 10 and user_guess != guess_target_number:
         guess_result_label.config(text=f"you've reached 10 attempts and didn't find it you lost, the number was {guess_target_number}")
         guess_button.config(state="disabled")
         return
@@ -280,5 +280,33 @@ rps_show_score_label = tk.Label(show_score_frame, text=f"You: {rps_user_score} -
 rps_show_score_label.pack(pady=10)
 guess_show_score_label = tk.Label(show_score_frame, text=f"best score: {best_guess_attempt}", font=("Arial", 14), bg="black", fg="white")
 guess_show_score_label.pack(pady=10)
+#============================================================================================================================================
+
+#reset score functions=======================================================================================================================
+def reset_rps_score():
+    global rps_user_score, rps_pc_score
+    rps_user_score = 0
+    rps_pc_score = 0
+    save_rps_score()
+    load_rps_score()
+    rps_show_score_label.config(text=f"You: {rps_user_score} - PC:{rps_pc_score}")
+    
+def reset_guess_score():
+    global best_guess_attempt
+    best_guess_attempt = 999
+    with open("guess_best_score.txt", "w") as f:
+        f.write(f"{best_guess_attempt}")
+    guess_show_score_label.config(text=f"best score: {best_guess_attempt}")
+#============================================================================================================================================
+
+#reset score menu=============================================================================================================================
+reset_score_question_label = tk.Label(reset_score_frame, text="which game do you wanna reset it's score?\n(Warning: this reset saved show score)", font=("Arial", 14),bg="yellow", fg="black")
+reset_score_question_label.pack()
+reset_score_choose_container = tk.Label(reset_score_frame, bg="yellow")
+reset_score_choose_container.pack()
+rps_reset_score = tk.Button(reset_score_choose_container, text="rock, paper, scissor",command=reset_rps_score,font=("Arial", 14), bg="black",fg="white")
+rps_reset_score.pack(side= "left", padx= 10)
+guess_reset_score = tk.Button(reset_score_choose_container, text="guess number",command=reset_guess_score,font=("Arial", 14), bg="black",fg="white")
+guess_reset_score.pack(side= "left", padx= 10)
 #============================================================================================================================================
 window.mainloop()
