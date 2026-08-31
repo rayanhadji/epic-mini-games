@@ -242,7 +242,7 @@ def check_guess():
     guess_attempts += 1
     guess_entry.delete(0, "end")
     
-    if guess_attempts == 10:
+    if guess_attempts == 10 and user_guess != guess_target_number:
         guess_result_label.config(text=f"you've reached 10 attempts and didn't find it you lost, the number was {guess_target_number}")
         guess_button.config(state="disabled")
         return
